@@ -18,23 +18,36 @@ apt install default-jdk
 sudo apt update
 sudo apt install git
 
+#----------------------------------------------------------------------
+# Permissoes pasta /opt/Dev
+#----------------------------------------------------------------------
+sudo groupadd dashboard
+sudo usermod -a -G dashboard eduardo
+sudo usermod -a -G dashboard Administrator
+sudo usermod -a -G dashboard postgres
+cd /opt
+sudo mkdir Dev
+sudo chgrp -R dashboard /opt/Dev
+sudo chmod g+rwx /opt/Dev
+# Para efetivar permissoes
+sudo reboot
+
 #-----------------------------------------------------------------------
 # Instalacao do Maven
 #-----------------------------------------------------------------------
 wget https://www-eu.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
 tar -xvf apache-maven-3.6.1-bin.tar.gz
 vim ~/.bash_profile
-export PATH=~/Dev/apache-maven-3.6.1/bin:$PATH
+export PATH=/opt/Dev/apache-maven-3.6.1/bin:$PATH
 source  ~/.bash_profile
 
 #-----------------------------------------------------------------------
 # Obter Projetos Dashboard e ETL
 #-----------------------------------------------------------------------
-mkdir ~/Dev
-cd ~/Dev
-git clone https:/github.com/filosofisto/escola-social-etl
-git clone https:/github.com/filosofisto/escola-social-api
-git clone https:/github.com/filosofisto/escola-social-web
+git clone https:/github.com/filosofisto/escola-social-etl.git
+git clone https:/github.com/filosofisto/escola-social-dashboard-api.git
+git clone https:/github.com/filosofisto/escola-social-dashboard-web.git
+git clone https://github.com/filosofisto/escola-social-docs.git
 
 #-----------------------------------------------------------------------
 # Construir os Projetos Java
@@ -51,7 +64,7 @@ mvn clean package -DskipTests
 sudo apt update
 sudo apt install build-essential libssl-dev
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
-export NVM_DIR="$HOMR/.nvm"
+export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 nvm install 10.16.0
@@ -68,64 +81,15 @@ npm install
 sudo apt update
 sudo apt install postgresql postgresql-contrib
 sudo -i -u postgres
-psql
 
-# Criar usuario escola_social_dev
-CREATE USER escola_social_dev WITH LOGIN NOSUPERUSER INHERIT NOCREATEDB NOCREATEROLE NOREPLICATION;
+# Alterar a senha do usuario postgres
+psql postgres posgres
+\password postgres
+Enter new password: socrates
+Enter it again: socratescd
 
-# Criar schema
-CREATE SCHEMA escola_social AUTHORIZATION escola_social_dev;
-ALTER DEFAULT PRIVILEGES IN SCHEMA escola_social GRANT SELECT ON TABLES TO escola_social_dev;
-
-# Criar sequences
-CREATE SEQUENCE escola_social.absenteismo_id_seq;
-ALTER SEQUENCE escola_social.absenteismo_id_seq OWNER TO escola_social_dev;
-
-CREATE SEQUENCE escola_social.assiduidade_id_assiduidade_seq;
-ALTER SEQUENCE escola_social.assiduidade_id_assiduidade_seq OWNER TO escola_social_dev;
-
-CREATE SEQUENCE escola_social.quadro_despesa_id_seq;
-ALTER SEQUENCE escola_social.quadro_despesa_id_seq OWNER TO escola_social_dev;
-
-# Criar tabelas
--- Table: escola_social.absenteismo
-
--- DROP TABLE escola_social.absenteismo;
-
-CREATE TABLE escola_social.absenteismo
-(
-    id integer NOT NULL DEFAULT nextval('escola_social.absenteismo_id_seq'::regclass),
-    data date NOT NULL,
-    matriculados integer NOT NULL,
-    presentes integer NOT NULL,
-    absenteismo integer NOT NULL,
-    percentual double precision NOT NULL
-)
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE escola_social.absenteismo
-    OWNER to escola_social_dev;
-
--- Index: idx_absenteismo_data
-
--- DROP INDEX escola_social.idx_absenteismo_data;
-
-CREATE UNIQUE INDEX idx_absenteismo_data
-    ON escola_social.absenteismo USING btree
-    (data)
-    TABLESPACE pg_default;
-
-
-#createuser --interactive
-#Enter name of role to add: escola_social_dev
-#Shall the new role be a superuser? (y/n) n
-#Shall the new role be allowed to create databases? (y/n) y
-#Shall the new role be allowed to create more new roles (y/n) n
-
-# Criar usuario para acesso ao
+cd /opt/Dev/escola-social-docs
+psql -f script.sql postgres
 
 #-----------------------------------------------------------------------
 # Variaveis de Ambiente
