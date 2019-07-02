@@ -1,0 +1,97 @@
+Matriculados em Janeiro: 805
+
+Considerações:
+
+1) Matricula 3780 faltou em 14/01 motivo: ORDEM LEGAL
+                  faltou em 14/03 motivo: ATESTADO DE COMPARECIMENTO
+                  faltou em 14/01 motivo: ATESTADO DE COMPARECIMENTO
+
+----------- Consultas Postgresql --------------
+
+-- Registros de 14 de Jan com Presenca
+select count(R.*)
+from (
+         select a.matricula
+              , a.data
+              , a.presenca PRESENCA
+              , a.falta    FALTA
+         from escola_social.assiduidade a
+         where (
+                       a.data between '2019-01-14' and '2019-01-14'
+                       and a.recesso_feriado = false
+                       and a.data not in (
+                       select data
+                           from escola_social.assiduidade
+                           where recesso_feriado
+                             and data between '2019-01-01' and current_date
+                           group by data
+                       )
+                       and a.falta = 0
+                   )
+         order by a.matricula, a.data
+     ) AS R
+=> 460
+
+-- Registros de 14 de Jan com Falta
+select count(R.*)
+from (
+         select a.matricula
+              , a.data
+              , a.presenca PRESENCA
+              , a.falta    FALTA
+         from escola_social.assiduidade a
+         where (
+                       a.data between '2019-01-14' and '2019-01-14'
+                       and a.recesso_feriado = false
+                       and a.data not in (
+                       select data
+                           from escola_social.assiduidade
+                           where recesso_feriado
+                             and data between '2019-01-01' and current_date
+                           group by data
+                       )
+                       and a.falta = 1
+                   )
+         order by a.matricula, a.data
+     ) AS R
+=> 41
+
+-- Total de matriculas em Janeiro
+select count(R.*)
+from (
+        select a.matricula
+        from escola_social.assiduidade a
+        where a.data between '2019-01-01' and '2019-01-31'
+        group by a.matricula
+    ) as R;
+=> 809
+
+----------- Consultas Access -----------
+
+-- Todos os registros da matricula 181
+SELECT a.*
+FROM tbAssiduidade a
+where a.matricula = 181
+order by a.datai desc
+
+-- Ultima data de registro
+SELECT max(a.datai)
+FROM tbAssiduidade AS a;
+
+-- Total de matriculas em Janeiro
+SELECT count(*)
+FROM (SELECT a.matricula
+FROM tbAssiduidade a
+where a.datai between #2019-01-01# and #2019-01-31#
+group by a.matricula
+)  AS [%$##@_Alias];
+=> 806
+
+-- Matriculados em 14 de Janeiro
+select count(*)
+from (
+SELECT a.matricula
+FROM tbAssiduidade a
+where a.datai = #2019-01-14#
+group by a.matricula
+)
