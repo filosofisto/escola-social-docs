@@ -1,0 +1,34 @@
+------------------------------------------------
+Atualização Funcionalidade Produção
+------------------------------------------------
+
+Atualiar o ETL
+
+cd /opt/Dev/escola-social-etl
+
+git pull
+
+mvn clean package -DskipTests
+
+java -jar target/escola-social-etl-1.0-SNAPSHOT.jar --producao
+
+
+Atualizar o Backend
+
+cd /opt/Dev/escola-social-dashboard-api
+
+Ctrl+C (se o backend estiver rodando)
+git pull
+
+mvn clean package -DskipTests
+
+java -jar target/escola-social-dashboard-api-0.1.0.jar
+
+
+Atualizar o Frontend
+
+cd /opt/Dev/escola-social-dashboard-web
+Ctrl+C (se o frontend estiver rodando)
+git pull
+
+npm start
