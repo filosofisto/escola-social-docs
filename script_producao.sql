@@ -24,7 +24,7 @@ WITH (
 )
 TABLESPACE pg_default;
 
-ALTER TABLE escola_social.quadro_despesa
+ALTER TABLE escola_social.producao
     OWNER to escola_social_dev;
 
 alter table escola_social.producao
