@@ -1,0 +1,4 @@
+- Na tabela dos produtos, colocar todos e remover o OUTROS
+- Nos graficos de linha, mostrar o valor (hint) - ??
+- Na tabela dos produtos mostrar "Anual" - ok
+- A partir de Jan de 2019 => acrescentar o ano - ok
