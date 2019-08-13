@@ -36,3 +36,11 @@ CREATE UNIQUE INDEX idx_folha_pagamento_id
     ON escola_social.folha_pagamento USING btree
     (id)
     TABLESPACE pg_default;
+
+delete from escola_social.folha_pagamento;
+
+alter table escola_social.folha_pagamento
+    drop column ano;
+
+alter table escola_social.folha_pagamento
+    drop column mes;
