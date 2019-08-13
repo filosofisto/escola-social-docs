@@ -44,3 +44,7 @@ alter table escola_social.folha_pagamento
 
 alter table escola_social.folha_pagamento
     drop column mes;
+
+    alter table escola_social.folha_pagamento
+        add ano integer not null, add mes integer not null;
+            
