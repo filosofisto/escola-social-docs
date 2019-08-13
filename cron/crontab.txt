@@ -1,0 +1,6 @@
+# ETL Producao -> todos os dias uteis 01:00
+0 1 * * 1-5 /opt/Dev/escola-social-docs/cron/producao.sh > /opt/Dev/logs/etl-producao.log
+
+# ETL Absenteismo -> todos os dias uteis 03:00
+0 3 * * 1-5 /opt/Dev/escola-social-docs/cron/absenteismo.sh > /opt/Dev/logs/etl-absenteismo.log
+

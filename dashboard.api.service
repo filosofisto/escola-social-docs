@@ -1,0 +1,16 @@
+[Unit]
+Description=Dashboard API Service
+#After=network.target
+After=postgresql.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=administrator
+ExecStart=/usr/bin/java -jar /opt/Dev/escola-social-dashboard-api/target/escla-social-dashboard-api-0.1.0.jar
+
+[Install]
+WantedBy=multi-user.target
+
